@@ -1,0 +1,19 @@
+.custom-active{
+    color: rgb(116, 197, 116) !important;
+}
+.custom-selectable a{
+    color: black;
+}
+.custom-selectable a:hover{
+    background: padding-box;
+    background-color: rgb(201, 224, 201);
+    text-decoration: none;
+    border-radius: 20px;
+    
+}
+
+div.fixed {
+    position: fixed;
+}
+
+
