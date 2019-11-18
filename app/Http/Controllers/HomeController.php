@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Tweet;
+use App\User;
 
 class HomeController extends Controller
 {
@@ -21,10 +23,19 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('home');
-
-        
+        $tweets = Tweet::with(['user:id,name','comment.user:id,name'])
+        ->orderBy('created_at', 'DESC')
+        ->simplePaginate(5);
+        if($request->ajax()){
+            return response()->json([
+                'success' => true, 
+                'next_page' => $tweets->nextPageUrl(), 
+                'auth' => auth()->check(), 
+                'tweets' => $tweets], 
+                200);
+        }
+        return view('home', compact('tweets'));
     }
 }

@@ -16,4 +16,54 @@ div.fixed {
     position: fixed;
 }
 
+textarea.textarea-autosize {
+  border: none;
+  overflow: auto;
+  outline: none;
+  
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  font-size: 20px;
+
+  resize: none; /*remove the resize handle on the bottom right*/
+  }
+
+  textarea.textarea-autosize:focus {
+    border: none;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+
+  
+  textarea.textarea-autosize.form-control-lg {
+    height: 3.75rem;
+    min-height: 3.75rem;
+  }
+  
+  textarea.textarea-autosize.form-control-sm {
+    height: 2rem;
+    min-height: 2rem;
+  }
+
+  span.strong{
+    font-size: 18px;
+    font-style: italic;
+    font-family: cursive;
+  }
+
+  .comments_div{
+    background-color: whitesmoke;
+  }
+  .post-header{
+    background-color: rgb(236, 243, 236);
+  }
+
+  .small-text{
+    font-size: 10px;
+  }
+
 
