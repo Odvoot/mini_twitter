@@ -36,9 +36,10 @@
                         <main class="py-4">
                             <div class="custom-selectable">
                                 <h4 class=""><a href="#"><strong><i class="fas fa-crow"></i></strong></a></h4><br>
-                                <h4><strong><a class="custom-active" href="#"><i class="fas fa-home"></i>&nbsp;&nbsp;Home</strong></a></h4><br>
-                                <h4 class=""><a class="" href="#"><strong><i class="far fa-user-circle"></i>&nbsp;&nbsp;Profile</strong></a></h4><br>
+                                <h4><strong><a class="{{Route::currentRouteName() == 'home' ? 'custom-active' : ''}}" href="{{route('home')}}"><i class="fas fa-home"></i>&nbsp;&nbsp;Home</strong></a></h4><br>
+                                
                                 @if (Auth::check())
+                                <h4 class=""><a class="{{Route::currentRouteName() == 'profile' ? 'custom-active' : ''}}" href="{{route('profile')}}"><strong><i class="far fa-user-circle"></i>&nbsp;&nbsp;Profile</strong></a></h4><br>
                                     <h4><a class="" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                                     document.getElementById('logout-form').submit();">

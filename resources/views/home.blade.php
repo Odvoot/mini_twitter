@@ -121,15 +121,15 @@
                             '</div><br>';
 
                     $('#append_container').prepend(s);
+                    //autosize.destroy(document.querySelectorAll('textarea'));
+                    autosize.destroy($('textarea'));
+                    autosize($('textarea'));
                 }
             }
 
             });
 
         });
-
-        
-        
 
         // -----------------------------Set value on show modal start--------------------------------------
         $('#commentModal').on('show.bs.modal', function (event) {
