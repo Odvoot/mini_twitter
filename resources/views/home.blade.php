@@ -118,7 +118,7 @@
                                     '<h5>Comments:</h5>'+
                                     '<div id="tweet_comment_div'+data.tweet.id+'"></div>'+   
                                 '</div>'+
-                            '</div>';
+                            '</div><br>';
 
                     $('#append_container').prepend(s);
                 }
@@ -194,7 +194,7 @@
                                         '<span class="strong">'+ tweet.user.name +'</span><span class="float-right">'+tweet.created_at+'</span>'+
                                     '</div>'+
                                     '<div class="card-body">'+ tweet.tweet + '<br><br>' +
-                                        (resp.auth ? '<button type="button"  class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#commentModal" data-postid="{{$tweet->id}}">Comment</button>' : '') +
+                                        (resp.auth ? '<button type="button"  class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#commentModal" data-postid="'+ tweet.id +'">Comment</button>' : '') +
                                    ' </div>' +
                                     '<div class="card-footer comments_div">'+
                                        ' <h5>Comments:</h5>'+
