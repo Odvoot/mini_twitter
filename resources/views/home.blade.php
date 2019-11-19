@@ -12,13 +12,24 @@
 @if (auth()->check())
     <div class="card">
         <div class="card-body">
-            <textarea class="form-control textarea-autosize" id="textarea_tweet" rows="1" placeholder="Share your Thoughts.."></textarea><br>
-            <button class="btn btn-success float-right" id="tweet_submit">Tweet</button>
+            <div class="row">
+                <div class="col-md-1">
+                    <div class="thumb_image">
+                    <img  src="{{$user->photo ? url($user->photo) : url('img/default.png')}}" alt="img"/>
+                    </div>
+                </div>
+                <div class="col-md-11">
+                    <textarea class="form-control textarea-autosize" id="textarea_tweet" rows="1" placeholder="Share your Thoughts.."></textarea><br>
+                    <button class="btn btn-success float-right" id="tweet_submit">Share</button>
+                </div>
+
+            </div>
+            
 
         </div>
     </div>
 @endif
-<br>
+
 <div id="append_container">
     @foreach ($tweets as $tweet)
         <div class="card">

@@ -28,7 +28,7 @@ class CommentController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Please Try Again'
+                'message' => 'Please Try Again validator'
                 ]);
         }
 

@@ -63,7 +63,7 @@ textarea.textarea-autosize {
   }
 
   .small-text{
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .small-grey-text{
@@ -104,25 +104,37 @@ textarea.textarea-autosize {
     border-radius: 20px;
   }
   .user_profile_headline img{
-      border:3px solid #EEEEEE;
+      border:1px solid #f3f7f6;
+      padding: 5px;
       width:150px;
       height:150px;
       float:left;
-      margin:-90px 20px 0  0;
+      margin:-90px 20px 0  20px;
       position:relative;
       z-index:1;
-      border-radius: 20px;
+      border-radius: 50%;
       object-fit: contain;
       
       background-color:white;
   }
+
+  .thumb_image img{
+    border:1px solid #f3f7f6;
+    padding: 3px;
+    width:50px;
+    height:50px;
+    position:relative;
+    border-radius: 50%;
+    object-fit: contain;
+    background-color:white;
+}
   .user_profile_headline h2{
    
       margin:0;
       padding:0;
       font-size:20px;
       font-weight:bold;
-      display:block;   
+      display:block;
   }
   .user_profile_headline span{
       font-size:12px;
@@ -130,3 +142,5 @@ textarea.textarea-autosize {
       color:gray;
    
   }
+
+

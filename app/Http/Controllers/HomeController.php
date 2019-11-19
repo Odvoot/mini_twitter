@@ -28,6 +28,7 @@ class HomeController extends Controller
         $tweets = Tweet::with(['user:id,name','comment.user:id,name'])
         ->orderBy('created_at', 'DESC')
         ->simplePaginate(5);
+        $user = auth()->user();
         if($request->ajax()){
             return response()->json([
                 'success' => true, 
@@ -36,6 +37,6 @@ class HomeController extends Controller
                 'tweets' => $tweets], 
                 200);
         }
-        return view('home', compact('tweets'));
+        return view('home', compact('tweets', 'user'));
     }
 }

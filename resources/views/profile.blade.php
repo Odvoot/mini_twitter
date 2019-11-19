@@ -11,14 +11,19 @@
 
     <div class="user_profile_cover">
         <img src="http://1.bp.blogspot.com/_Ym3du2sG3R4/S_-M_kTV9OI/AAAAAAAACZA/SNCea2qKOWQ/s1600/mac+os+x+wallpaper.jpg" alt="img"/>
+        
     </div>
 
     <div class="user_profile_headline">
-        <img src="http://1.bp.blogspot.com/_Ym3du2sG3R4/S_-M_kTV9OI/AAAAAAAACZA/SNCea2qKOWQ/s1600/mac+os+x+wallpaper.jpg" alt="img"/> 
+        <div>
+            <img id="profile_image_page" src="{{$user->photo ? url($user->photo) : url('img/default.png')}}" alt="img"/> 
+        </div>
         
-        <h2>{{$user->name}}</h2><button class="btn btn-outline-success float-right">Update</button>
-        <span><i class="fa fa-envelope" aria-hidden="true"></i> {{$user->email}}</span><span>
-        <br><i class="fa fa-calendar" aria-hidden="true"></i> Joined {{$user->created_at->format('M d, Y')}}</span>
+        
+        <h2>{{$user->name}}</h2><button class="btn btn-outline-success float-right" data-toggle="modal" data-target="#profile_edit_modal">Update</button>
+        {{-- <button type="button"  class="btn btn-outline-success float-right" data-toggle="modal" data-target="#commentModal" data-postid="{{$tweet->id}}">Comment</button> --}}
+        <span><i class="fa fa-envelope" aria-hidden="true"></i> {{$user->email}}</span><br>
+        <span><i class="fa fa-calendar" aria-hidden="true"></i> Joined {{$user->created_at->format('M d, Y')}}</span>
         
     </div>
   
@@ -46,14 +51,14 @@
                 </div>    
             </div>
         </div>
-        <br>
+       
     @endforeach
-    
+    <br>
 </div>
 
 
 
-{{-- Modal Start --}}
+{{-- Comment Modal Start --}}
 <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -78,6 +83,33 @@
 </div>
 {{-- Modal end --}}
 
+{{-- Profile Edit Modal Start --}}
+<div class="modal fade bd-example-modal-lg" id="profile_edit_modal" tabindex="-1" role="dialog" aria-labelledby="profile_edit_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="user_profile_cover">
+                <img src="http://1.bp.blogspot.com/_Ym3du2sG3R4/S_-M_kTV9OI/AAAAAAAACZA/SNCea2qKOWQ/s1600/mac+os+x+wallpaper.jpg" alt="img"/>
+                
+            </div>
+            <form id="image_form" method="post" enctype="multipart/form-data">
+            <div class="user_profile_headline">
+                <div>
+                    <img id="profile_image_display" src="{{$user->photo ? url($user->photo) : url('img/default.png')}}" alt="img"/> 
+                    <p id="validation_message" class="text-danger"></p>
+                </div>
+                <input type="file" accept="image/png, image/jpeg" class="form-control-file" id="profile_picture" name="photo">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Change</button>
+            </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+    {{-- Modal end --}}
+
 
 @endsection
 
@@ -85,6 +117,7 @@
 @push('script')
 <script>
     var tweet_url = {!! json_encode(route('post.tweet')) !!};
+    var base_url = {!! json_encode(url('/')) !!};
     $(document).ready(function(){
         $.ajaxSetup({
             headers: {
@@ -94,7 +127,7 @@
 
         autosize($('textarea'));
 
-        // -----------------------------Set value on show modal start--------------------------------------
+        // -----------------------------Set value on show comment modal start--------------------------------------
         $('#commentModal').on('show.bs.modal', function (event) {
             $('#textarea_comment').val('');
             var button = $(event.relatedTarget) // Button that triggered the modal
@@ -103,12 +136,21 @@
             
         });
 
+        // -----------------------------Set value on show comment modal start--------------------------------------
+        $('#profile_edit_modal').on('show.bs.modal', function (event) {
+            $('#validation_message').text('');
+            
+        });
+
+        
+
         //-------------------------------------------- submit comment -------------------------------------------
         $('#comment_submit').on('click', function (event) {
             event.preventDefault();
             
             var comment = $('#textarea_comment').val();
             var tweet_id = $('#hidden_post_id').val();
+            ///alert(tweet_id);
             
             $.ajax({
             type:'POST',
@@ -131,7 +173,49 @@
             
         });
 
-        // ------------------------------------ load more via ajax --------------------------------------------------------
+        // ------------------------------------ Update Image --------------------------------------------------------
+
+        $('#image_form').submit(function(event){
+
+            event.preventDefault();
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: "{{route('profile.update_photo')}}",
+                data: formData,
+                type: 'post',
+                processData: false,
+                contentType: false,
+                success:function(response){
+                    console.log(response);
+                    if (response.success) {
+                        $('#profile_image_page').attr('src',response.path);
+                        $('#profile_edit_modal').modal('hide');
+                    }
+                    else{
+                        $('#validation_message').text(response.message);
+                    }
+                   
+                }
+            });
+
+        });
+
+        //------------------------Image show------------------------------------------------------------------------------
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#profile_image_display').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#profile_picture").change(function(){
+            readURL(this);
+        });
       
         // ---------------------------------------------------end --------------------------------------------------------
         
