@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Tweet;
 use App\User;
+use DB;
 
 class HomeController extends Controller
 {
@@ -25,11 +26,18 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $tweets = Tweet::with(['user:id,name','comment.user:id,name'])
-        ->orderBy('created_at', 'DESC')
-        ->simplePaginate(5);
-        $user = auth()->user();
         $followed_list = User::followed();
+        $my_id = auth()->id() ? auth()->id() : 0;
+        $raw_q = 'CASE WHEN f.followed_user IS NULL AND user_id != '. $my_id .' THEN 1 ELSE 2 END AS is_friend';
+        $tweets = Tweet::with(['user:id,name','comment.user:id,name'])
+        ->leftJoin('followers as f', function ($join) {
+            $join->on('tweets.user_id', '=', 'f.followed_user')->where('f.followed_from', auth()->id());
+        })
+        ->select('tweets.*','f.followed_user', DB::raw($raw_q))
+        ->orderBy('is_friend', 'DESC')
+        ->orderBy('tweets.created_at', 'DESC')
+        ->simplePaginate(10);
+        $user = auth()->user();
         if($request->ajax()){
             return response()->json([
                 'success' => true, 

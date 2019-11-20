@@ -35,7 +35,7 @@
                     <div class="fixed">
                         <main class="py-4">
                             <div class="custom-selectable">
-                                <h4 class=""><a href="#"><strong><i class="fas fa-crow"></i></strong></a></h4><br>
+                                <h4 class=""><a href="{{route('home')}}"><strong><i class="fas fa-crow"></i></strong></a></h4><br>
                                 <h4><strong><a class="{{Route::currentRouteName() == 'home' ? 'custom-active' : ''}}" href="{{route('home')}}"><i class="fas fa-home"></i>&nbsp;&nbsp;Home</strong></a></h4><br>
                                 
                                 @if (Auth::check())
