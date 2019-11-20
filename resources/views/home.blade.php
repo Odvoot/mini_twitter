@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-md-1">
                     <div class="thumb_image">
-                    <img  src="{{$user->photo ? url($user->photo) : url('img/default.png')}}" alt="img"/>
+                    <img  src="{{$user->photo ? url($user->photo) : url('img/default.png')}}" alt="i"/>
                     </div>
                 </div>
                 <div class="col-md-11">
@@ -34,7 +34,17 @@
     @foreach ($tweets as $tweet)
         <div class="card">
             <div class="card-header post-header"><i class="far fa-user-circle"></i>&nbsp;
-                <span class="strong">{{$tweet->user->name}} </span><span class="float-right">{{$tweet->created_at->format('d M H:i')}}</span>
+                <span class="strong">{{$tweet->user->name}} </span>&nbsp;&nbsp;&nbsp;
+                @if (auth()->check() && $tweet->user->id != auth()->id())
+                    @if ($followed_list->has($tweet->user->id))
+                        <button type="button" class="follow-btn btn btn-info btn-sm" value="{{$tweet->user->id}}">following</button>
+                    @else
+                        <button type="button" class="follow-btn btn btn-outline-info btn-sm" value="{{$tweet->user->id}}">follow</button>
+                    @endif
+                    
+                @endif
+                
+                <span class="float-right">{{$tweet->created_at->format('d M H:i')}}</span>
             </div>
             <div class="card-body">
                 {{$tweet->tweet}} <br><br>
@@ -95,6 +105,8 @@
 @push('script')
 <script>
     var tweet_url = {!! json_encode(route('post.tweet')) !!};
+    var followed = {!!json_encode($followed_list)!!};
+    var my_id = {!!json_encode(auth()->id())!!};
     $(document).ready(function(){
         $.ajaxSetup({
             headers: {
@@ -103,7 +115,6 @@
         });
 
         autosize($('textarea'));
-
         //------------------------- submit post--------------------------------------
         $("#tweet_submit").click(function(e){
             e.preventDefault();
@@ -142,11 +153,34 @@
 
         });
 
+        // ----------------------------- Follow or Unfollow with a single Click--------------------------------------
+        $(document).on('click', '.follow-btn', function (event) {
+            
+            var button = $(this); // Button that triggered the modal
+            var userid = button.val();
+            $.ajax({
+            type:'POST',
+            url:{!! json_encode(route('follow')) !!},
+            data:{followed_user:userid},
+            dataType: 'json',
+            success:function(data){
+                if (data.success) {
+                    $(".follow-btn[value|="+userid+"]").toggleClass( "btn-outline-info" );
+                    $(".follow-btn[value|="+userid+"]").toggleClass( "btn-info" );
+                    $(".follow-btn[value|="+userid+"]").text( (button.text() == "follow") ? "following" : "follow" );
+                    
+                }
+            }
+
+            });
+            
+        });
+
         // -----------------------------Set value on show modal start--------------------------------------
         $('#commentModal').on('show.bs.modal', function (event) {
             $('#textarea_comment').val('');
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var postid = button.data('postid') // Extract info from data-* attributes
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var postid = button.data('postid'); // Extract info from data-* attributes
             $('#hidden_post_id').val(postid);
             
         });
@@ -202,7 +236,14 @@
                     resp.tweets.data.forEach(tweet => {
                         var s = '<div class="card">'+
                                     '<div class="card-header post-header"><i class="far fa-user-circle"></i>&nbsp;'+
-                                        '<span class="strong">'+ tweet.user.name +'</span><span class="float-right">'+tweet.created_at+'</span>'+
+                                        '<span class="strong">'+ tweet.user.name +'</span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                                        if (resp.auth && tweet.user.id != my_id) {
+                                        s +='<button type="button" class="follow-btn btn ' + (followed.hasOwnProperty(tweet.user.id) ? 'btn-info' : 'btn-outline-info') +' btn-sm" value="'+ tweet.user.id +'">' +
+                                            (followed.hasOwnProperty(tweet.user.id) ? 'following' : 'follow') +
+                                            '</button>';
+                                        }
+                                        
+                                    s += '<span class="float-right">'+tweet.created_at+'</span>'+
                                     '</div>'+
                                     '<div class="card-body">'+ tweet.tweet + '<br><br>' +
                                         (resp.auth ? '<button type="button"  class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#commentModal" data-postid="'+ tweet.id +'">Comment</button>' : '') +

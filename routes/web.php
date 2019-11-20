@@ -22,3 +22,4 @@ Route::post('/tweet', 'TweetController@tweet')->name('post.tweet');
 Route::post('/comment', 'CommentController@comment')->name('post.comment');
 Route::get('/profile', 'ProfileController@profile')->name('profile');
 Route::post('/photo_upload', 'ProfileController@upload_photo')->name('profile.update_photo');
+Route::post('/follow', 'FollowerController@follow')->name('follow');

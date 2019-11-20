@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Follower;
 use App\Tweet;
 use App\User;
 
@@ -32,8 +33,20 @@ class ProfileController extends Controller
         ->orderBy('created_at', 'DESC')
         ->get();
         $tweet_count = $tweets->count();
+        $followers = User::join('followers as f', function ($join) {
+            $join->on('users.id', '=', 'f.followed_from')->where('f.followed_user', auth()->id());
+        })
+        ->select('users.id','users.name','users.photo','users.email','users.created_at')
+        ->get();
+
+        $followed = User::join('followers as f', function ($join) {
+            $join->on('users.id', '=', 'f.followed_user')->where('f.followed_from', auth()->id());
+        })
+        ->select('users.id','users.name','users.photo','users.email','users.created_at')
+        ->get();
+        $followed_list = $followed->keyBy('id');
         $user = auth()->user();
-        return view('profile', compact('tweets','user', 'tweet_count'));
+        return view('profile', compact('tweets','user', 'tweet_count', 'followers', 'followed', 'followed_list'));
     }
 
     /**

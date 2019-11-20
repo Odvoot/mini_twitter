@@ -29,14 +29,15 @@ class HomeController extends Controller
         ->orderBy('created_at', 'DESC')
         ->simplePaginate(5);
         $user = auth()->user();
+        $followed_list = User::followed();
         if($request->ajax()){
             return response()->json([
                 'success' => true, 
                 'next_page' => $tweets->nextPageUrl(), 
-                'auth' => auth()->check(), 
+                'auth' => auth()->check(),
                 'tweets' => $tweets], 
                 200);
         }
-        return view('home', compact('tweets', 'user'));
+        return view('home', compact('tweets', 'user', 'followed_list'));
     }
 }
